@@ -3,6 +3,16 @@
 
 
 {% block content %}
-  <h1>Hello, Bootstrap</h1>
-  {{ wtf.quick_form(form, id="tim") }}
+<a href="/options">Options</a>
+    <div class="container">
+        <ul class="list-group">People
+            {% for user in users %}
+                <li class="list-group-item"><a href="/user/{{ user.id }}">id: {{ user.id }} - {{ user.name }} is at level {{ user.level }}</a></li>
+            {% endfor %}
+        </ul>
+        <div class="card" style="width: 18rem;">
+                Add new person:
+                {{ wtf.quick_form(form, id="tim") }}
+        </div>
+    </div>
 {% endblock %}

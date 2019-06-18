@@ -1,0 +1,20 @@
+{% extends "bootstrap/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+
+{% block content %}
+<a href="/">Home</a>
+    <div class="container">
+        <ul class="list-group">People
+            {% for option in options %}
+                <li class="list-group-item">id: {{ option.id }} - {{ option.option }} is at level {{ option.level }}</li>
+                <li class="list-group-item">If you are of the appropriate level, sign up for this.</li>
+                <li class="list-group-item"><form action='/user/options' method='post'><input type="number" label="user_id" name="{{ option.id }}"><button type="submit" class="btn btn-primary">Submit</button></form></li>
+            {% endfor %}
+        </ul>
+        <div class="card" style="width: 18rem;">
+                Add new option:
+                {{ wtf.quick_form(form, id="tim") }}
+        </div>
+    </div>
+{% endblock %}
