@@ -4,7 +4,7 @@ from app import db
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from app.forms import UserForm, OptionsForm
-from app.models import User, Option, UserOption
+from app.models import User, Option, UserOption, Comment
 
 engine = db.engine
 Session = sessionmaker(engine)
@@ -46,18 +46,36 @@ def create_user_option():
 
 @app.route('/user/<int:id>')
 def user(id):
-    options = session.query(User, Option, UserOption).filter(User.id == UserOption.user_id
-    ).filter(Option.id == UserOption.id).all()
-    print(options[0][0])
+    options = session.query(User, UserOption, Option).filter(User.id == UserOption.user_id
+    ).filter(Option.id == UserOption.option_id).all()
+    print(options)
     return render_template('user.html', id=id, options=options)
 
-@app.route('/options/<int:id>/delete', methods=['POST'])
+@app.route('/user_options/<int:id>/delete', methods=['POST'])
 def delete(id):
     user_id = 0
     for y in request.form:
         user_id = y
         print(y, request.form[y])
-        uo = Option.query.filter_by(id=request.form[y]).first()
-        session.delete(uo)
-        session.commit()
+        uo = UserOption.query.filter_by(option_id=request.form[y], user_id=y).first()
+        print(uo, "<====")
+        db.session.delete(uo)
+        db.session.commit()
     return redirect (f'/user/{user_id}')
+
+@app.route('/options/<int:id>/delete', methods=['POST'])
+def delete_option(id):
+    if request.method == 'GET':
+        return "you cant do that"
+    option = Option.query.get(id)
+    print(option)
+    db.session.delete(option)
+    db.session.commit()
+    return redirect('/')
+
+@app.route('/comment/add', methods=['POST'])
+def comment():
+    x = Comment(comment=request.form.get('comment'), user_id=request.form.get('user_id'),user_option_id=request.form.get('user_option_id'))
+    db.session.add(x)
+    db.session.commit()
+    return "yo"

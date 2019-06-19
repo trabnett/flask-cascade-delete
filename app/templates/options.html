@@ -9,7 +9,15 @@
             {% for option in options %}
                 <li class="list-group-item">id: {{ option.id }} - {{ option.option }} is at level {{ option.level }}</li>
                 <li class="list-group-item">If you are of the appropriate level, sign up for this.</li>
-                <li class="list-group-item"><form action='/user/options' method='post'><input type="number" label="user_id" name="{{ option.id }}"><button type="submit" class="btn btn-primary">Submit</button></form></li>
+                <li class="list-group-item">
+                    <form action='/user/options' method='post'>
+                        <input type="number" label="user_id" name="{{ option.id }}">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                    <form action="/options/{{ option.id }}/delete" method='post'>
+                        <input class="btn btn-danger" type="submit" value="Delete">
+                    </form>
+                </li>
             {% endfor %}
         </ul>
         <div class="card" style="width: 18rem;">

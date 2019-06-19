@@ -7,7 +7,8 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String())
     level = db.Column(db.Integer())
-    user_option = Relationship('UserOption')
+    user_option = relationship('UserOption', cascade="delete")
+    comment = relationship('Comment', cascade="delete")
 
     def __init__(self, name, level):
         self.name = name
@@ -22,6 +23,7 @@ class Option(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     option = db.Column(db.String())
     level = db.Column(db.Integer())
+    user_option = relationship("UserOption", cascade="delete")
 
     def __init__(self, option, level):
         self.option = option
@@ -31,8 +33,21 @@ class Option(db.Model):
         return '<id {}>'.format(self.option)
 
 class UserOption(db.Model):
+    __tablename__ = 'user_option'
+
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    user = relationship("User", cascade="delete")
+    user = relationship("User")
     option_id = db.Column(db.Integer, db.ForeignKey('option.id'))
-    option = relationship("Option", cascade="delete")
+    option = relationship("Option")
+    comment = relationship("Comment", cascade="delete")
+
+class Comment(db.Model):
+    __tablename__ = 'comment'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_option_id = db.Column(db.Integer, db.ForeignKey('user_option.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    comment = db.Column(db.String())
+    user_option = relationship("UserOption")
+    user = relationship("User")
