@@ -46,10 +46,14 @@ def create_user_option():
 
 @app.route('/user/<int:id>')
 def user(id):
+    user= User.query.get(id)
+    print(user, "heeeeeey")
     options = session.query(User, UserOption, Option).filter(User.id == UserOption.user_id
-    ).filter(Option.id == UserOption.option_id).all()
+    ).filter(Option.id == UserOption.option_id).filter(User.id == id).all()
     print(options)
-    return render_template('user.html', id=id, options=options)
+    comments = Comment.query.filter_by(user_id=id).all()
+    print(comments)
+    return render_template('user.html', id=id, options=options, comments=comments)
 
 @app.route('/user_options/<int:id>/delete', methods=['POST'])
 def delete(id):
@@ -75,7 +79,8 @@ def delete_option(id):
 
 @app.route('/comment/add', methods=['POST'])
 def comment():
+    y = request.form.get('user_id')
     x = Comment(comment=request.form.get('comment'), user_id=request.form.get('user_id'),user_option_id=request.form.get('user_option_id'))
     db.session.add(x)
     db.session.commit()
-    return "yo"
+    return redirect(f'/user/{y}')

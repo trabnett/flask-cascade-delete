@@ -6,21 +6,33 @@
 {% if options|length > 0 %}
     <div class="container">
         <a href="/">home</a>
-        <h1>Welcome {{ options[0][0].name }}{{ id }}</h1>
+        <h1>Welcome {{ options[0][0].name }}, who's user id is: {{ id }}</h1>
         <ul class="list-group">Options you have tried
             {% for option in options %}
                 <li class="list-group-item">
-                    {{ option[2].option }}
+                    The option name is <b>{{ option[2].option }} </b>and the user_option_id is <b>{{ option[1].id }}</b>
                     <form action="/user_options/{{ option[2].id }}/delete" method='post'>
                         <input type="hidden" name='{{ option[0].id }}' value='{{ option[2].id }}'>
                         <input class="btn btn-danger" type="submit" value="Delete">
                     </form>
+                    {% if comments|length > 0 %}
+                        {% for comment in comments %}
+                            {% if comment.user_option_id == option[1].id %}
+                            <div class="card" style="width: 18rem;">
+                                <div class="card-body">
+                                    <h5>Comment {{ loop.index }}:</h5>
+                                    <p class="card-text">{{ comment.comment }}</p>
+                                </div>
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
                     <form action="/comment/add" method="post">
                         <div class="form-group">
                             <input type='hidden' value='{{option[1].id}}' name='user_option_id'>
                             <input type='hidden' value='{{option[0].id}}' name='user_id'>
-                            <label for="exampleFormControlTextarea1">Example textarea</label>
-                            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name='comment'></textarea>
+                            <label for="exampleFormControlTextarea1">Make a comment</label>
+                            <textarea class="form-control" rows="3" name='comment'></textarea>
                             <input class="btn btn-primary" type="submit" value="Comment">
                         </div>
                     </form>

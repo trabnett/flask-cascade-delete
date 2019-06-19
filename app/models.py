@@ -42,6 +42,13 @@ class UserOption(db.Model):
     option = relationship("Option")
     comment = relationship("Comment", cascade="delete")
 
+    def __init__(self, user_id, option_id):
+        self.user_id = user_id
+        self.option_id = option_id
+
+    def __repr__(self):
+        return '<id {}>'.format(self.id)
+
 class Comment(db.Model):
     __tablename__ = 'comment'
 
@@ -51,3 +58,11 @@ class Comment(db.Model):
     comment = db.Column(db.String())
     user_option = relationship("UserOption")
     user = relationship("User")
+
+    def __init__(self, user_option_id, user_id, comment):
+        self.user_option_id = user_option_id
+        self.user_id = user_id
+        self.comment = comment
+
+    def __repr__(self):
+        return '<id {}>'.format(self.id)
